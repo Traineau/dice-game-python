@@ -69,7 +69,14 @@ def analyse_turn_normal_score(dices_value_occurrence_list):
 
     return turn_normal_score, dices_value_occurrence_list
 
+
+def analyse_roll_to_score(dices_value_occurrence_list):
+    bonus_score, dices_value_occurrence_list = analyse_turn_bonus_score(dices_value_occurrence_list)
+    normal_score, dices_value_occurrence_list = analyse_turn_normal_score(dices_value_occurrence_list)
+
+    return bonus_score + normal_score, dices_value_occurrence_list
+
+
 dices = roll_dices(10)
 print(dices)
-print(analyse_turn_bonus_score(dices))
-print(analyse_turn_normal_score(dices))
+print(analyse_roll_to_score(dices))
