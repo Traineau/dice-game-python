@@ -1,4 +1,5 @@
 import random
+import math
 
 # ----------------------< Game rules constants  >-----------------------------------------------------------------------
 
@@ -56,27 +57,82 @@ def analyse_turn_bonus_score(dices_value_occurrence_list):
     return turn_bonus_score, dices_value_occurrence_list
 
 
+# Return the score from normal scoring only in OccurrenceValueList and the remaining OccurrenceValueDice
 def analyse_turn_normal_score(dices_value_occurrence_list):
     turn_normal_score = 0
 
-    index = 0
-    while index < len(LIST_SCORING_DICE_VALUE):
-        scoring_dice_index = LIST_SCORING_DICE_VALUE[index] - 1
-        turn_normal_score += dices_value_occurrence_list[scoring_dice_index] * LIST_SCORING_MULTIPLIER[index]
-        dices_value_occurrence_list[scoring_dice_index] = 0
+    scoring_value_index = 0
+    while scoring_value_index < len(LIST_SCORING_DICE_VALUE):
+        scoring_value = LIST_SCORING_DICE_VALUE[scoring_value_index]
+        scoring_multiplier = LIST_SCORING_MULTIPLIER[scoring_value_index]
+        turn_normal_score += dices_value_occurrence_list[scoring_value - 1] * scoring_multiplier
+        dices_value_occurrence_list[scoring_value - 1] = 0
 
-        index += 1
+        scoring_value_index += 1
 
     return turn_normal_score, dices_value_occurrence_list
 
 
+# Return the score from both bonus and normal scoring in OccurrenceValueList and the remaining OccurrenceValueDice
 def analyse_roll_to_score(dices_value_occurrence_list):
-    bonus_score, dices_value_occurrence_list = analyse_turn_bonus_score(dices_value_occurrence_list)
-    normal_score, dices_value_occurrence_list = analyse_turn_normal_score(dices_value_occurrence_list)
+    bonus_score, remaining_value_occurrence_list = analyse_turn_bonus_score(dices_value_occurrence_list)
+    normal_score, remaining_value_occurrence_list = analyse_turn_normal_score(dices_value_occurrence_list)
 
-    return bonus_score + normal_score, dices_value_occurrence_list
+    return bonus_score + normal_score, remaining_value_occurrence_list
 
 
-dices = roll_dices(10)
-print(dices)
-print(analyse_roll_to_score(dices))
+def get_sum_remaining_dices(dices_value_occurrence_list):
+    return sum(dices_value_occurrence_list)
+
+
+def roll_score_distribution(nb_roll, nb_dice, interval):
+    list_score = []
+    list_remaining_dices = []
+    list_remaining_dices_distribution = [0] * (nb_dice + 1)
+
+    index_nb_roll = 0
+    while index_nb_roll < nb_roll:
+        dices = roll_dices(nb_dice)
+        score, remaining_dices = analyse_roll_to_score(dices)
+        sum_dices = get_sum_remaining_dices(remaining_dices)
+        list_remaining_dices_distribution[sum_dices] += 1
+        list_score.append(score)
+        list_remaining_dices.append(remaining_dices)
+        index_nb_roll += 1
+
+    list_score_distribution = [0] * ((max(list_score) // interval) + 1)
+
+    index_list_score = 0
+    while index_list_score < len(list_score):
+        list_score_distribution[math.ceil(list_score[index_list_score] / interval)] += 1
+        index_list_score += 1
+
+    index_list_score_distribution = 0
+    while index_list_score_distribution < len(list_score_distribution):
+        list_score_distribution[index_list_score_distribution] /= nb_roll
+        index_list_score_distribution += 1
+
+    index_list_remaining_dices_distribution = 0
+    while index_list_remaining_dices_distribution < len(list_remaining_dices_distribution):
+        list_remaining_dices_distribution[index_list_remaining_dices_distribution] /= nb_roll
+        index_list_remaining_dices_distribution += 1
+
+    return list_score_distribution, list_remaining_dices_distribution
+
+def play_turn():
+    is_playing = True
+    dices_to_play = 5
+    score = 0
+
+    #while is_playing:
+    #    dices = roll_dices(dices_to_play)
+    dices = roll_dices(dices_to_play)
+    print(dices)
+    print(analyse_roll_to_score(dices))
+    print(get_sum_remaining_dices(dices))
+
+
+list_score_distribution, list_remaining_dices_distribution = (roll_score_distribution(10000, 5, 50))
+
+print(list_score_distribution, "\n")
+print(list_remaining_dices_distribution, "\n")
