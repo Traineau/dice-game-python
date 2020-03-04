@@ -23,14 +23,14 @@ BONUS_VALUE_FOR_NORMAL_BONUS = 100
 
 
 def roll_dices(nb_dice_to_roll):
-    dices_values_history = [0] * NB_DICE_SIDE
-    index = 0
-    while index < nb_dice_to_roll:
+    dices_values_occurrence = [0] * NB_DICE_SIDE
+    dice_index = 0
+    while dice_index < nb_dice_to_roll:
         dice_value = random.randint(1, NB_DICE_SIDE)
-        dices_values_history[dice_value - 1] += 1
-        index += 1
+        dices_values_occurrence[dice_value - 1] += 1
+        dice_index += 1
 
-    return dices_values_history
+    return dices_values_occurrence
 
 
-print(roll_dices(10))
+print(roll_dices(100000000))
