@@ -23,14 +23,38 @@ BONUS_VALUE_FOR_NORMAL_BONUS = 100
 
 
 def roll_dices(nb_dice_to_roll):
-    dices_values_occurrence = [0] * NB_DICE_SIDE
+    dices_value_occurrence_list = [0] * NB_DICE_SIDE
     dice_index = 0
     while dice_index < nb_dice_to_roll:
         dice_value = random.randint(1, NB_DICE_SIDE)
-        dices_values_occurrence[dice_value - 1] += 1
+        dices_value_occurrence_list[dice_value - 1] += 1
         dice_index += 1
 
-    return dices_values_occurrence
+    return dices_value_occurrence_list
 
 
-print(roll_dices(100000000))
+# Return the score from bonus only in OccurrenceValueList and the remaining OccurrenceValueDice
+def analyse_turn_bonus_score(dices_value_occurrence_list):
+    turn_bonus_score = 0
+
+    dices_index = 0
+    while dices_index < len(dices_value_occurrence_list):
+        dice_value = dices_index + 1
+        if dices_value_occurrence_list[dices_index] >= TRIGGER_OCCURRENCE_FOR_BONUS:
+            bonus_occurrence = dices_value_occurrence_list[dices_index] // TRIGGER_OCCURRENCE_FOR_BONUS
+            if dice_value == 1:
+                turn_bonus_score += bonus_occurrence * BONUS_VALUE_FOR_ACE_BONUS
+            else:
+                turn_bonus_score += bonus_occurrence * BONUS_VALUE_FOR_NORMAL_BONUS * dice_value
+
+            dices_value_occurrence_list[dices_index] -= bonus_occurrence * TRIGGER_OCCURRENCE_FOR_BONUS
+
+        dices_index += 1
+
+    return turn_bonus_score
+
+
+dices = roll_dices(10)
+print(dices)
+print(analyse_turn_bonus_score(dices))
+print(dices)
