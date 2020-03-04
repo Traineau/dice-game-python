@@ -107,15 +107,8 @@ def roll_score_distribution(nb_roll, nb_dice, interval):
         list_score_distribution[math.ceil(list_score[index_list_score] / interval)] += 1
         index_list_score += 1
 
-    index_list_score_distribution = 0
-    while index_list_score_distribution < len(list_score_distribution):
-        list_score_distribution[index_list_score_distribution] /= nb_roll
-        index_list_score_distribution += 1
-
-    index_list_remaining_dices_distribution = 0
-    while index_list_remaining_dices_distribution < len(list_remaining_dices_distribution):
-        list_remaining_dices_distribution[index_list_remaining_dices_distribution] /= nb_roll
-        index_list_remaining_dices_distribution += 1
+    list_score_distribution = [n / nb_roll for n in list_score_distribution]
+    list_remaining_dices_distribution = [n / nb_roll for n in list_remaining_dices_distribution]
 
     return list_score_distribution, list_remaining_dices_distribution
 
