@@ -56,6 +56,21 @@ def analyse_turn_bonus_score(dices_value_occurrence_list):
     return turn_bonus_score, dices_value_occurrence_list
 
 
+def analyse_turn_normal_score(dices_value_occurrence_list):
+    turn_normal_score = 0
+
+    index = 0
+    while index < len(LIST_SCORING_DICE_VALUE):
+        scoring_dice_index = LIST_SCORING_DICE_VALUE[index] - 1
+        if dices_value_occurrence_list[scoring_dice_index] > 0:
+            turn_normal_score += dices_value_occurrence_list[scoring_dice_index] * LIST_SCORING_MULTIPLIER[index]
+            dices_value_occurrence_list[scoring_dice_index] = 0
+
+        index += 1
+
+    return turn_normal_score, dices_value_occurrence_list
+
 dices = roll_dices(10)
 print(dices)
 print(analyse_turn_bonus_score(dices))
+print(analyse_turn_normal_score(dices))
