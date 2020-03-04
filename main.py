@@ -43,9 +43,9 @@ def analyse_turn_bonus_score(dices_value_occurrence_list):
         bonus_occurrence = dices_value_occurrence_list[dices_index] // TRIGGER_OCCURRENCE_FOR_BONUS
         if bonus_occurrence >= 1:
             if dice_value == 1:
-                bonus_multiplier = 1000
+                bonus_multiplier = BONUS_VALUE_FOR_ACE_BONUS
             else:
-                bonus_multiplier = 100
+                bonus_multiplier = BONUS_VALUE_FOR_NORMAL_BONUS
 
             turn_bonus_score += bonus_occurrence * bonus_multiplier * dice_value
 
