@@ -53,10 +53,9 @@ def analyse_turn_bonus_score(dices_value_occurrence_list):
 
         dices_index += 1
 
-    return turn_bonus_score
+    return turn_bonus_score, dices_value_occurrence_list
 
 
 dices = roll_dices(10)
 print(dices)
 print(analyse_turn_bonus_score(dices))
-print(dices)
