@@ -38,16 +38,18 @@ def analyse_turn_bonus_score(dices_value_occurrence_list):
     turn_bonus_score = 0
 
     dices_index = 0
-    while dices_index < len(dices_value_occurrence_list):
+    while dices_index < NB_DICE_SIDE:
         dice_value = dices_index + 1
-        if dices_value_occurrence_list[dices_index] >= TRIGGER_OCCURRENCE_FOR_BONUS:
-            bonus_occurrence = dices_value_occurrence_list[dices_index] // TRIGGER_OCCURRENCE_FOR_BONUS
+        bonus_occurrence = dices_value_occurrence_list[dices_index] // TRIGGER_OCCURRENCE_FOR_BONUS
+        if bonus_occurrence >= 1:
             if dice_value == 1:
-                turn_bonus_score += bonus_occurrence * BONUS_VALUE_FOR_ACE_BONUS
+                bonus_multiplier = 1000
             else:
-                turn_bonus_score += bonus_occurrence * BONUS_VALUE_FOR_NORMAL_BONUS * dice_value
+                bonus_multiplier = 100
 
-            dices_value_occurrence_list[dices_index] -= bonus_occurrence * TRIGGER_OCCURRENCE_FOR_BONUS
+            turn_bonus_score += bonus_occurrence * bonus_multiplier * dice_value
+
+            dices_value_occurrence_list[dices_index] %= TRIGGER_OCCURRENCE_FOR_BONUS
 
         dices_index += 1
 
