@@ -87,45 +87,51 @@ def get_sum_remaining_dices(dices_value_occurrence_list):
 
 def roll_score_distribution(nb_roll, nb_dice, interval):
     list_score = []
-    list_remaining_dices = []
     list_remaining_dices_distribution = [0] * (nb_dice + 1)
 
     index_nb_roll = 0
     while index_nb_roll < nb_roll:
-        dices = roll_dices(nb_dice)
-        score, remaining_dices = analyse_roll_to_score(dices)
-        sum_dices = get_sum_remaining_dices(remaining_dices)
-        list_remaining_dices_distribution[sum_dices] += 1
+        score, remaining_dices = analyse_roll_to_score(roll_dices(nb_dice))
+
+        list_remaining_dices_distribution[nb_dice - sum(remaining_dices)] += 1
         list_score.append(score)
-        list_remaining_dices.append(remaining_dices)
+
         index_nb_roll += 1
 
-    list_score_distribution = [0] * ((max(list_score) // interval) + 1)
+    max_score = max(list_score)
+    list_score_distribution = [0] * ((max_score // interval) + 1)
 
     index_list_score = 0
     while index_list_score < len(list_score):
-        list_score_distribution[math.ceil(list_score[index_list_score] / interval)] += 1
+        score_occurrence_index = math.ceil(list_score[index_list_score] / interval)
+        list_score_distribution[score_occurrence_index] += 1
         index_list_score += 1
 
     list_score_distribution = [n / nb_roll for n in list_score_distribution]
     list_remaining_dices_distribution = [n / nb_roll for n in list_remaining_dices_distribution]
 
-    return list_score_distribution, list_remaining_dices_distribution
-
-def play_turn():
-    is_playing = True
-    dices_to_play = 5
-    score = 0
-
-    #while is_playing:
-    #    dices = roll_dices(dices_to_play)
-    dices = roll_dices(dices_to_play)
-    print(dices)
-    print(analyse_roll_to_score(dices))
-    print(get_sum_remaining_dices(dices))
+    return max_score, list_score_distribution, list_remaining_dices_distribution
 
 
-list_score_distribution, list_remaining_dices_distribution = (roll_score_distribution(10000, 5, 50))
+def play_until_fail(nb_dice):
+    nb_dice_to_launch = nb_dice
+    can_launch_dices = True
+    total_score = 0
+    while can_launch_dices:
+        score, remaining_dices = analyse_roll_to_score(roll_dices(nb_dice_to_launch))
+        if score == 0:
+            can_launch_dices = False
+        else:
+            total_score += score
+            nb_dice_to_launch = sum(remaining_dices) if sum(remaining_dices) != 0 else nb_dice
 
+    return total_score
+
+
+max_score, list_score_distribution, list_remaining_dices_distribution = (roll_score_distribution(10000, 5, 50))
+
+print(max_score, "\n")
 print(list_score_distribution, "\n")
 print(list_remaining_dices_distribution, "\n")
+
+print(play_until_fail(5))
