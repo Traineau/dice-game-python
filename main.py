@@ -128,10 +128,35 @@ def play_until_fail(nb_dice):
     return total_score
 
 
-max_score, list_score_distribution, list_remaining_dices_distribution = (roll_score_distribution(10000, 5, 50))
+def turn_score_distribution(nb_turn, nb_dice, interval):
+    score_list = []
+
+    roll_index = 0
+    while roll_index < nb_turn:
+        score_list.append(play_until_fail(nb_dice))
+        roll_index += 1
+
+    max_roll_score = max(score_list)
+
+    score_occurrence_list = [0] * ((max_roll_score // interval) + 2)
+
+    roll_index = 0
+    while roll_index < nb_turn:
+        score_occurrence_index = math.ceil(score_list[roll_index] / interval)
+        score_occurrence_list[score_occurrence_index] += 1
+        roll_index += 1
+
+    occurrence_index = 0
+    while occurrence_index < len(score_occurrence_list):
+        score_occurrence_list[occurrence_index] /= nb_turn
+        occurrence_index += 1
+
+    return max_roll_score, score_occurrence_list
+
+
+max_score, score_occurrence_list = (turn_score_distribution(10000, 5, 200))
 
 print(max_score, "\n")
-print(list_score_distribution, "\n")
-print(list_remaining_dices_distribution, "\n")
+print(score_occurrence_list, "\n")
 
 print(play_until_fail(5))
